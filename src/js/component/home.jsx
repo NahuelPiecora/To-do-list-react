@@ -16,7 +16,7 @@ return(
  <div className="container-fluid">
     <TaskInput addItem={addItem} />
 	{list.map((li,index)=><li key={`${li}-${index}`}>{li}</li>)}
-
+	{(list.length)} task left
 
  </div>
 </>
