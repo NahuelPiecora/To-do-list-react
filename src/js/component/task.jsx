@@ -1,20 +1,23 @@
 import React, { useState } from "react";
-import Task from "./tasks.jsx";
 
-const Task = (prop1, prop2) => {
+
+const Task = ({list,setlist,i}) => {
     const[visible, toggleVisibility] = useState(false)
+    
 
+    const removeItem = index =>{
+        const removeToDo = list.filter((i,item) => i != index)
+        setlist(removeToDo)
+    }
 
 
     return (
         
-        <li  onMouseEnter={() => toggleVisibility(true)}>{prop1.listItem}
-            <button
-                className={(visible == true) ? "btn DelItem float-end text-danger" : "d-none"}
-                onClick={() => {toggleVisibility(false); prop2.removeItem(); }}>
-                <i className="fa fa-trash p-2 flex-shrink-1" />
+        <span  onMouseEnter={() => toggleVisibility(true)}>
+            <button onClick = {() => removeItem(index)}>
+             x
             </button>
-        </li>
+        </span>
     
     )
 }

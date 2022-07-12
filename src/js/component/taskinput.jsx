@@ -8,6 +8,7 @@ const TaskInput = (props) => {
     const validateInput = () => {
     if(inputValue === "") {
         alert("No tasks, add a task");
+        
     } else {
         props.addItem(inputValue)
  }
@@ -15,7 +16,7 @@ const TaskInput = (props) => {
 
     return (
     <div className="container-fluid">
-    <input 
+    <input id="fname" name="fname"
         type="text" 
         onChange={e => setInputValue(e.target.value)} 
         value={inputValue} 
