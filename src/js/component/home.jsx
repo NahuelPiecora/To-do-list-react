@@ -10,11 +10,11 @@ const Home = () => {
     setlist(newList);
   };
   const removeItem = (index) => {
-    //const removeToDo = list.filter((i, item) => i != index);
+const removeToDo = list.filter((item,i) => i != index);
 	const newArray = [...list]
-	newArray.splice(index, 1);
-    setlist(newArray);
-	console.log(newArray)
+	//newArray.splice(index, 1);
+    setlist(removeToDo);
+	console.log(removeToDo)
   };
 
   return (
