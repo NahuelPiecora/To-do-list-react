@@ -1,21 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TaskInput from "./taskinput.jsx";
-
 
 const Home = () => {
   const [list, setlist] = useState([]);
   const addItem = (listitem) => {
+  const newToDo = {label:newTask, done:false};
     const newList = [...list, listitem];
 
-    setlist(newList);
-  };
+  fetch("https://assets.breatheco.de/apis/fake/todos/user/alesanchezr", {
+    method: "PUT",
+    body: JSON.stringify(newList),
+    headers: {
+    "Content-Type": "application/json",
+    },
+    })
+    .then((resp) => {
+    if (resp.status == 200) {
+    return resp.json();
+    }
+    })
+    .then((data) => {
+    alert(data.result);
+    fetchListItems;
+    })
+    .catch((error) => {
+    console.log(error);
+    });
+    setInputValue("");
+    }
   const removeItem = (index) => {
-const removeToDo = list.filter((item,i) => i != index);
-	const newArray = [...list]
-	//newArray.splice(index, 1);
+    const removeToDo = list.filter((item, i) => i != index);
+    const newArray = [...list];
+    //newArray.splice(index, 1);
     setlist(removeToDo);
-	console.log(removeToDo)
+    console.log(removeToDo);
   };
+
+  useEffect(() => {
+    fetchListItems();
+  }, []);
+  function fetchListItems() {
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/alesanchezr", {
+      method: "GET",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((resp) => {
+        if (resp.status == 200) {
+          return resp.json();
+        }
+      })
+      .then((data) => {
+        setlist(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        //error handling
+        console.log(error);
+      });
+  }
 
   return (
     <>
@@ -27,7 +72,7 @@ const removeToDo = list.filter((item,i) => i != index);
             <div key={i}>
               {" "}
               <li>
-                {li}
+                {li.label}
                 <button onClick={() => removeItem(i)}>x</button>
               </li>
             </div>
