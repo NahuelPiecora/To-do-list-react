@@ -4,45 +4,15 @@ import TaskInput from "./taskinput.jsx";
 const Home = () => {
   const [list, setlist] = useState([]);
   const addItem = (listitem) => {
-  const newToDo = {label:newTask, done:false};
+    const newToDo = { label: newTask, done: false };
     const newList = [...list, listitem];
-
-  fetch("https://assets.breatheco.de/apis/fake/todos/user/alesanchezr", {
-    method: "PUT",
-    body: JSON.stringify(newList),
-    headers: {
-    "Content-Type": "application/json",
-    },
-    })
-    .then((resp) => {
-    if (resp.status == 200) {
-    return resp.json();
-    }
-    })
-    .then((data) => {
-    alert(data.result);
-    fetchListItems;
-    })
-    .catch((error) => {
-    console.log(error);
-    });
-    setInputValue("");
-    }
-  const removeItem = (index) => {
-    const removeToDo = list.filter((item, i) => i != index);
-    const newArray = [...list];
-    //newArray.splice(index, 1);
-    setlist(removeToDo);
-    console.log(removeToDo);
   };
+  const url = "https://assets.breatheco.de/apis/fake/todos/user/nahuelp";
 
-  useEffect(() => {
-    fetchListItems();
-  }, []);
-  function fetchListItems() {
-    fetch("https://assets.breatheco.de/apis/fake/todos/user/alesanchezr", {
-      method: "GET",
-
+  const updateToDos = () => {
+    fetch ( url , {
+      method: "PUT",
+      body: JSON.stringify(newList),
       headers: {
         "Content-Type": "application/json",
       },
@@ -53,14 +23,58 @@ const Home = () => {
         }
       })
       .then((data) => {
-        setlist(data);
-        console.log(data);
+        alert(data.result);
       })
       .catch((error) => {
-        //error handling
         console.log(error);
       });
-  }
+  };
+
+  const toDoList = async () => {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify([]),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        response.json();
+      }
+    } catch (error) {
+      throw Error(error);
+    }
+  };
+  const removeItem = (index) => {
+    const removeToDo = list.filter((item, i) => i != index);
+    const newArray = [...list];
+    //newArray.splice(index, 1);
+    setlist(removeToDo);
+    console.log(removeToDo);
+  };
+
+  useEffect(() => {
+    getList();
+  }, []);
+
+  const getList = async () => {
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setlist(data)
+      }
+    } catch (error) {
+      throw Error(error);
+    }
+  };
 
   return (
     <>
