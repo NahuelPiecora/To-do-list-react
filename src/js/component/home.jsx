@@ -1,100 +1,74 @@
 import React, { useState, useEffect } from "react";
-import TaskInput from "./taskinput.jsx";
 
+
+//create your first component
 const Home = () => {
-  const [list, setlist] = useState([]);
-  const addItem = (listitem) => {
-    const newToDo = { label: newTask, done: false };
-    const newList = [...list, listitem];
-  };
-  const url = "https://assets.breatheco.de/apis/fake/todos/user/nahuelp";
+  const [ToDoList, setToDoList] = useState([
+    "Go to the gym",
+    "Read a book",
+    "Eat food",
+  ]);
 
-  const updateToDos = () => {
-    fetch ( url , {
-      method: "PUT",
-      body: JSON.stringify(newList),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((resp) => {
-        if (resp.status == 200) {
-          return resp.json();
-        }
-      })
-      .then((data) => {
-        alert(data.result);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const toDoList = async () => {
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify([]),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        response.json();
-      }
-    } catch (error) {
-      throw Error(error);
+  const addItem = (onKeyDownEvent) => {
+    if (onKeyDownEvent.keyCode === 13) {
+      let newTask = onKeyDownEvent.target.value;
+      const newList = [...ToDoList, newTask];
+      setToDoList(newList);
+      setInputValue("");
     }
   };
   const removeItem = (index) => {
-    const removeToDo = list.filter((item, i) => i != index);
-    const newArray = [...list];
-    //newArray.splice(index, 1);
-    setlist(removeToDo);
-    console.log(removeToDo);
+    const removeTask = ToDoList.filter((item, i) => i != index);
+    setToDoList(removeTask);
   };
-
-  useEffect(() => {
-    getList();
-  }, []);
-
-  const getList = async () => {
-    try {
-      const response = await fetch(url, {
-        method: "GET",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setlist(data)
-      }
-    } catch (error) {
-      throw Error(error);
-    }
-  };
+  const [inputValue, setInputValue] = useState("");
+  const [isShown, setIsShown] = useState({
+    state: false,
+    index: 0,
+  });
+  const list = ToDoList.map((item, i) => {
+    return (
+      <div className="repeating" key={i}>
+        <li
+          onMouseEnter={() => setIsShown({ state: true, index: i })}
+          onMouseLeave={() => setIsShown({ state: false, index: 0 })}
+        >
+          {item}{" "}
+          {isShown.state === true && isShown.index === i ? (
+            <button onClick={() => removeItem(i)}>X</button>
+          ) : (
+            ""
+          )}
+        </li>
+      </div>
+    );
+  });
 
   return (
-    <>
-      <h1> To-do</h1>
-      <div className="container-fluid">
-        <TaskInput addItem={addItem} />
-        {list.map((li, i) => {
-          return (
-            <div key={i}>
-              {" "}
-              <li>
-                {li.label}
-                <button onClick={() => removeItem(i)}>x</button>
-              </li>
-            </div>
-          );
-        })}
-        {list.length} task left
+    <div className="container-fluid card">
+      <h1>ToDos</h1>
+      <input
+        type="text"
+        onKeyDown={addItem}
+        placeholder=" "
+        id="fname"
+        name="fname"
+		onChange={e => setInputValue(e.target.value)}
+		value={inputValue}
+      />
+      <div>
+        <ul>
+          {list}
+          <li>
+            {ToDoList.length > 1
+              ? `${ToDoList.length} items`
+              : ToDoList.length > 0
+              ? `${ToDoList.length} item`
+              : "No tasks, add a task"}
+          </li>
+        </ul>
       </div>
-    </>
+    </div>
   );
 };
 
